@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .hotel-container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        .add-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .add-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hotel-container">
+        <h1>Hotel List</h1>
+        
+        <table id="hotelTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Hotel list will be added here dynamically -->
+            </tbody>
+        </table>
+
+        <button class="add-button" onclick="addHotel()">Add Hotel</button>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:8080/getAllHotels";  // Backend API URL
+        const API_URL_POST = "http://localhost:8080/addHotel";  // Backend API URL
+
+        async function fetchHotels() {
+            try {
+                let response = await fetch(API_URL);
+                let hotels = await response.json();
+                displayHotels(hotels);
+            } catch (error) {
+                console.error("Error fetching hotels:", error);
+            }
+        }
+
+        function displayHotels(hotels) {
+            let tableBody = document.querySelector("#hotelTable tbody");
+            tableBody.innerHTML = "";
+
+            hotels.forEach(hotel => {
+                let row = `<tr>
+                    
+                            <td>${hotel.name}</td>
+                            <td>${hotel.location}</td>
+                           </tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        async function addHotel() {
+            let name = prompt("Enter Hotel Name:");
+            let location = prompt("Enter Hotel Location:");
+
+            if (!name || !location) return; // Prevent adding empty values
+
+            let newHotel = { name, location };
+
+            try {
+                let response = await fetch(API_URL_POST, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(newHotel)
+                });
+
+                if (response.ok) {
+                    fetchHotels();  // Refresh the hotel list
+                } else {
+                    console.error("Error adding hotel");
+                }
+            } catch (error) {
+                console.error("Failed to add hotel:", error);
+            }
+        }
+
+        // Load hotels when the page loads
+        fetchHotels();
+    </script>
+
+</body>
+</html>
