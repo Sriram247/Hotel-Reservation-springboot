@@ -143,9 +143,14 @@ The `Hotel` entity uses a **UUID** as the primary key instead of an auto-increme
 ## 📌 Screenshots
 
 ### **GET Request Example:**
+![GET Request Screenshot](/frontend.png)
 
+### **API Response:**
+![POST Request Screenshot](/frontend_input.png)
 
 ### **POST Request Example:**
+![POST Request Screenshot](/frontend_input.png)
+
 
 ----------
 
